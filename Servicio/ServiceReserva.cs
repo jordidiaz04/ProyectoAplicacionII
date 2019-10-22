@@ -54,12 +54,38 @@ namespace Servicio
             }
         }
 
-        public bool registrarReserva(HuespedBE objHuespedBE, ReservaBE objReservaBE, ReservaDetalleBE objReservaDetalleBE, ReservaHuespedBE objReservaHuespedBE)
+        public bool registrarReserva(DateTime fechaIngreso,
+                                     DateTime fechaSalida,
+                                     Int32 idTipoPago,
+                                     Decimal monto,
+                                     Int32 idAmbiente,
+                                     List<HuespedBE> lstHuespedBE)
         {
             using(HospedajeEntities entity = new HospedajeEntities())
             {
                 try
                 {
+                    Reserva reserva = new Reserva()
+                    {
+                        fechaIngreso = fechaIngreso,
+                        fechaSalida = fechaSalida,
+                        idTipoPago = idTipoPago,
+                        monto = monto,
+                        estado = true
+                    };
+                    entity.Reserva.Add(reserva);
+                    entity.SaveChanges();
+
+                    ReservaDetalle reservaDetalle = new ReservaDetalle()
+                    {
+                        idReserva = reserva.id,
+                        idAmbiente = idAmbiente,
+                        estado = true
+                    };
+                    entity.ReservaDetalle.Add(reservaDetalle);
+                    entity.SaveChanges();
+
+
 
                     return true;
                 }

@@ -14,10 +14,12 @@ namespace Servicio
         List<ReservaBE> listarReservasPorHuesped(String dni);
 
         [OperationContract]
-        Boolean registrarReserva(HuespedBE objHuespedBE,
-                                 ReservaBE objReservaBE,
-                                 ReservaDetalleBE objReservaDetalleBE,
-                                 ReservaHuespedBE objReservaHuespedBE);
+        Boolean registrarReserva(DateTime fechaIngreso,
+                                 DateTime fechaSalida,
+                                 Int32 idTipoPago,
+                                 Decimal monto,
+                                 Int32 idAmbiente,
+                                 List<HuespedBE> lstHuespedBE);
     }
 }
 
@@ -32,9 +34,9 @@ public class ReservaBE
     [DataMember]
     public DateTime FechaSalida { get; set; }
     [DataMember]
-    public String IdTipoPago { get; set; }
+    public Int32 IdTipoPago { get; set; }
     [DataMember]
-    public String Monto { get; set; }
+    public Decimal Monto { get; set; }
 
     //Datos para Reportes
     [DataMember]

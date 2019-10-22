@@ -19,7 +19,7 @@ namespace Servicio
                     List<HuespedBE> lstHuespedBE = new List<HuespedBE>();
                     var listaHuespedes = (from item in entity.ReservaHuesped
                                           group item by item.Huesped.Pais.ubicacion into huesped
-                                          select huesped).Distinct().ToList();
+                                          select huesped).ToList();
 
                     foreach (var item in listaHuespedes)
                     {
