@@ -11,8 +11,12 @@ namespace Servicio
     public interface IServiceAmbiente
     {
         [OperationContract]
-        List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, DateTime fechaFinal);
-        List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, DateTime fechaFinal, Decimal precioMenor, Decimal precioMayor);
+        List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, 
+                                                           DateTime fechaFinal);
+        List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, 
+                                                                    DateTime fechaFinal, 
+                                                                    Decimal precioMenor, 
+                                                                    Decimal precioMayor);
     }
 }
 
