@@ -17,6 +17,19 @@ namespace Servicio
                 try
                 {
                     List<HuespedBE> lstHuespedBE = new List<HuespedBE>();
+                    var listaHuespedes = (from item in entity.ReservaHuesped
+                                          group item by item.Huesped.Pais.ubicacion into huesped
+                                          select huesped).Distinct().ToList();
+
+                    foreach (var item in listaHuespedes)
+                    {
+                        HuespedBE objHuespedBE = new HuespedBE()
+                        {
+                            Pais = item.Key.ToString(),
+                            Cantidad = item.Count()
+                        };
+                        lstHuespedBE.Add(objHuespedBE);
+                    }
 
                     return lstHuespedBE;
                 }
