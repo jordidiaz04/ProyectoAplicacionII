@@ -12,17 +12,20 @@ namespace Servicio
     {
         [OperationContract]
         List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, 
-                                                           DateTime fechaFinal);
+                                                           DateTime fechaFinal,
+                                                           String idUbigeo);
         [OperationContract]
         List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio,
                                                                     DateTime fechaFinal,
                                                                     Decimal precioMenor,
-                                                                    Decimal precioMayor);
+                                                                    Decimal precioMayor,
+                                                                    String idUbigeo);
         [OperationContract]
         List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio,
-                                                            DateTime fechaFinal,
-                                                            Int32 aforoMenor,
-                                                            Int32 aforoMayor);
+                                                           DateTime fechaFinal,
+                                                           Int32 aforoMenor,
+                                                           Int32 aforoMayor,
+                                                           String idUbigeo);
     }
 }
 
@@ -31,13 +34,15 @@ namespace Servicio
 public class AmbienteBE
 {
     [DataMember]
-    public String direccion { get; set; }
+    public String Distrito { get; set; }
     [DataMember]
-    public Int32 piso { get; set; }
+    public String Direccion { get; set; }
     [DataMember]
-    public String identificador { get; set; }
+    public Int32 Piso { get; set; }
     [DataMember]
-    public Int32 aforo { get; set; }
+    public String Identificador { get; set; }
     [DataMember]
-    public Decimal precio { get; set; }
+    public Int32 Aforo { get; set; }
+    [DataMember]
+    public Decimal Precio { get; set; }
 }

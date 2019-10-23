@@ -7,47 +7,33 @@ using System.Text;
 
 namespace Servicio
 {
-    // NOTA: puede usar el comando "Rename" del menú "Refactorizar" para cambiar el nombre de clase "ServiceHuesped" en el código y en el archivo de configuración a la vez.
     public class ServiceHuesped : IServiceHuesped
     {
-
-        public float contarDineroGastadoPorHuesped(String tipoDoc, String numeroDocumento)
+        public List<HuespedReporteBE> contarHuespedesPorPais(DateTime fechaInicio, 
+                                                             DateTime fechaFinal)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {
                 try
                 {
-                    Decimal total = 0;
-                    String idUsuario = (from item in entity.Huesped
-                                          where item.idTipoDoc == tipoDoc &&
-                                          item.numDoc == numeroDocumento
-                                          select item.id).ToString();
+                    List<HuespedReporteBE> lstHuespedReporteBE = new List<HuespedReporteBE>();
+                    var listaHuespedes = (from item in entity.ReservaHuesped
+                                          where item.Reserva.fechaIngreso >= fechaInicio &&
+                                                item.Reserva.fechaSalida <= fechaFinal
+                                          group item by item.Huesped.Pais.ubicacion into huesped
+                                          select huesped).ToList();
 
-                    List<ReservaBE> lstReservaBE = new List<ReservaBE>();
-                    var lista = (from huesped in entity.ReservaHuesped
-                                 join ambiente in entity.ReservaDetalle on huesped.idReserva equals ambiente.idReserva
-                                 where huesped.Huesped.id == Convert.ToInt16(idUsuario)
-                                 select new
-                                 {
-                                     dni = huesped.Huesped.numDoc,
-                                     huesped = huesped.Huesped.nombre,
-                                     fechaInicio = huesped.Reserva.fechaIngreso,
-                                     fechaSalida = huesped.Reserva.fechaSalida,
-                                     direccion = ambiente.Ambiente.Hotel.direccion,
-                                     piso = ambiente.Ambiente.piso,
-                                     identificador = ambiente.Ambiente.identificador,
-                                     monto = huesped.Reserva.monto
-                                 }).ToList();
-                    foreach (var item in lista)
+                    foreach (var item in listaHuespedes)
                     {
-                        Decimal monto;
+                        HuespedReporteBE objHuespedReporteBE = new HuespedReporteBE()
                         {
-                            monto = item.monto;
+                            Pais = item.Key.ToString(),
+                            Cantidad = item.Count()
                         };
-                        total += monto;
-                    };
+                        lstHuespedReporteBE.Add(objHuespedReporteBE);
+                    }
 
-                    return Convert.ToSingle(total);
+                    return lstHuespedReporteBE;
                 }
                 catch (Exception ex)
                 {
@@ -56,31 +42,62 @@ namespace Servicio
             }
         }
 
-        public List<HuespedBE> contarHuespedesPorPais()
+        public Decimal obtenerDineroGastadoPorHuesped(DateTime fechaInicio, 
+                                                      DateTime fechaFinal, 
+                                                      String idTipoDoc,
+                                                      String numDoc)
+        {
+            using (HospedajeEntities entity = new HospedajeEntities())
+            {
+                try
+                {
+                    Decimal total = 0;
+
+                    List<ReservaBE> lstReservaBE = new List<ReservaBE>();
+                    var lista = (from huesped in entity.ReservaHuesped
+                                 join ambiente in entity.ReservaDetalle on huesped.idReserva equals ambiente.idReserva
+                                 where huesped.Huesped.idTipoDoc == idTipoDoc &&
+                                       huesped.Huesped.numDoc == numDoc
+                                 select new { monto = huesped.Reserva.monto }).ToList();
+
+                    foreach (var item in lista)
+                    {
+                        total += item.monto;
+                    };
+
+                    return total;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        public Boolean registrarHuesped(HuespedBE objHuespedBE)
         {
             using(HospedajeEntities entity = new HospedajeEntities())
             {
                 try
                 {
-                    List<HuespedBE> lstHuespedBE = new List<HuespedBE>();
-                    var listaHuespedes = (from item in entity.ReservaHuesped
-                                          group item by item.Huesped.Pais.ubicacion into huesped
-                                          select huesped).ToList();
-
-                    foreach (var item in listaHuespedes)
+                    Huesped huesped = new Huesped()
                     {
-                        HuespedBE objHuespedBE = new HuespedBE()
-                        {
-                            Pais = item.Key.ToString(),
-                            Cantidad = item.Count()
-                        };
-                        lstHuespedBE.Add(objHuespedBE);
-                    }
+                        idTipoDoc = objHuespedBE.IdTipoDoc,
+                        numDoc = objHuespedBE.NumDoc,
+                        nombre = objHuespedBE.Nombre,
+                        email = objHuespedBE.Email,
+                        telefono = objHuespedBE.Email,
+                        idPais = objHuespedBE.IdPais,
+                        estado = true
+                    };
 
-                    return lstHuespedBE;
+                    entity.Huesped.Add(huesped);
+                    entity.SaveChanges();
+                    return true;
                 }
                 catch (Exception ex)
                 {
+                    return false;
                     throw ex;
                 }
             }

@@ -7,10 +7,13 @@ using System.Text;
 
 namespace Servicio
 {
-    // NOTA: puede usar el comando "Rename" del menú "Refactorizar" para cambiar el nombre de clase "ServiceAmbiente" en el código y en el archivo de configuración a la vez.
     public class ServiceAmbiente : IServiceAmbiente
     {
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio, DateTime fechaFinal, int aforoMenor, int aforoMayor)
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio, 
+                                                                  DateTime fechaFinal, 
+                                                                  Int32 aforoMenor,
+                                                                  Int32 aforoMayor,
+                                                                  String idUbigeo)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {
@@ -20,6 +23,7 @@ namespace Servicio
                     var listaAmbientes = (from item in entity.Ambiente
                                           where item.aforo >= aforoMenor &&
                                                 item.aforo <= aforoMayor &&
+                                                item.Hotel.idUbigeo == idUbigeo &&
                                                 item.estado == true
                                           select item).ToList();
 
@@ -38,11 +42,12 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
-                            direccion = item.Hotel.direccion,
-                            identificador = item.identificador,
-                            piso = item.piso,
-                            aforo = item.aforo,
-                            precio = item.precio
+                            Distrito = item.Hotel.Ubigeo.ubicacion,
+                            Direccion = item.Hotel.direccion,
+                            Piso = item.piso,
+                            Identificador = item.identificador,
+                            Aforo = item.aforo,
+                            Precio = item.precio
                         };
                         lstAmbienteBE.Add(objAmbienteBE);
                     }
@@ -56,7 +61,9 @@ namespace Servicio
             }
         }
 
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, DateTime fechaFinal)
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, 
+                                                                  DateTime fechaFinal,
+                                                                  String idUbigeo)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {
@@ -64,11 +71,14 @@ namespace Servicio
                 {
                     List<AmbienteBE> lstAmbienteBE = new List<AmbienteBE>();
                     var listaAmbientes = (from item in entity.Ambiente
-                                          where item.estado == true
+                                          where item.estado == true &&
+                                                item.Hotel.idUbigeo == idUbigeo
                                           select item).ToList();
 
                     var listaReservas = (from item in entity.ReservaDetalle
-                                         where item.Reserva.fechaIngreso >= fechaInicio && item.Reserva.fechaSalida <= fechaFinal && item.Reserva.estado == true
+                                         where item.Reserva.fechaIngreso >= fechaInicio && 
+                                               item.Reserva.fechaSalida <= fechaFinal && 
+                                               item.Reserva.estado == true
                                          select item).ToList();
 
                     foreach (var item in listaReservas)
@@ -80,10 +90,11 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
-                            direccion = item.Hotel.direccion,
-                            identificador = item.identificador,
-                            piso = item.piso,
-                            precio = item.precio
+                            Distrito = item.Hotel.Ubigeo.ubicacion,
+                            Direccion = item.Hotel.direccion,
+                            Piso = item.piso,
+                            Identificador = item.identificador,
+                            Precio = item.precio
                         };
                         lstAmbienteBE.Add(objAmbienteBE);
                     }
@@ -97,7 +108,11 @@ namespace Servicio
             }
         }
 
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, DateTime fechaFinal, Decimal precioMenor, Decimal precioMayor)
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, 
+                                                                           DateTime fechaFinal, 
+                                                                           Decimal precioMenor, 
+                                                                           Decimal precioMayor,
+                                                                           String idUbigeo)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {
@@ -107,6 +122,7 @@ namespace Servicio
                     var listaAmbientes = (from item in entity.Ambiente
                                           where item.precio >= precioMenor &&
                                                 item.precio <= precioMayor &&
+                                                item.Hotel.idUbigeo == idUbigeo &&
                                                 item.estado == true
                                           select item).ToList();
 
@@ -125,10 +141,11 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
-                            direccion = item.Hotel.direccion,
-                            identificador = item.identificador,
-                            piso = item.piso,
-                            precio = item.precio
+                            Distrito = item.Hotel.Ubigeo.ubicacion,
+                            Direccion = item.Hotel.direccion,
+                            Piso = item.piso,
+                            Identificador = item.identificador,
+                            Precio = item.precio
                         };
                         lstAmbienteBE.Add(objAmbienteBE);
                     }

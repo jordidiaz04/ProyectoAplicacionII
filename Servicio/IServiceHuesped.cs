@@ -11,9 +11,16 @@ namespace Servicio
     public interface IServiceHuesped
     {
         [OperationContract]
-        List<HuespedBE> contarHuespedesPorPais();
+        List<HuespedReporteBE> contarHuespedesPorPais(DateTime fechaInicio, 
+                                                      DateTime fechaFinal);
+
         [OperationContract]
-        Single contarDineroGastadoPorHuesped(String tipoDoc, String numeroDocumento);
+        Decimal obtenerDineroGastadoPorHuesped(DateTime fechaInicio,
+                                               DateTime fechaFinal, 
+                                               String idTipoDoc, 
+                                               String numDoc);
+
+        Boolean registrarHuesped(HuespedBE objHuespedBE);
     }
 }
 
@@ -35,8 +42,12 @@ public class HuespedBE
     public String Telefono { get; set; }
     [DataMember]
     public String IdPais { get; set; }
+}
 
-    //Datos para Reportes
+[DataContract]
+[Serializable]
+public class HuespedReporteBE
+{
     [DataMember]
     public String Pais { get; set; }
     [DataMember]
