@@ -12,6 +12,8 @@ namespace Servicio
     {
         [OperationContract]
         List<HuespedBE> contarHuespedesPorPais();
+        [OperationContract]
+        Single contarDineroGastadoPorHuesped(String tipoDoc, String numeroDocumento);
     }
 }
 

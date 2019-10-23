@@ -13,10 +13,16 @@ namespace Servicio
         [OperationContract]
         List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, 
                                                            DateTime fechaFinal);
-        List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, 
-                                                                    DateTime fechaFinal, 
-                                                                    Decimal precioMenor, 
+        [OperationContract]
+        List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio,
+                                                                    DateTime fechaFinal,
+                                                                    Decimal precioMenor,
                                                                     Decimal precioMayor);
+        [OperationContract]
+        List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio,
+                                                            DateTime fechaFinal,
+                                                            Int32 aforoMenor,
+                                                            Int32 aforoMayor);
     }
 }
 
@@ -30,6 +36,8 @@ public class AmbienteBE
     public Int32 piso { get; set; }
     [DataMember]
     public String identificador { get; set; }
+    [DataMember]
+    public Int32 aforo { get; set; }
     [DataMember]
     public Decimal precio { get; set; }
 }
