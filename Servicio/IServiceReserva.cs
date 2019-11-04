@@ -11,15 +11,18 @@ namespace Servicio
     public interface IServiceReserva
     {
         [OperationContract]
-        List<ReservaBE> listarReservasPorHuesped(String dni);
+        List<ReservaBE> listarReservasPorHuesped(String idTipoDoc, 
+                                                 String numDoc,
+                                                 DateTime fechaInicio,
+                                                 DateTime fechaFinal);
 
         [OperationContract]
         Boolean registrarReserva(DateTime fechaIngreso,
                                  DateTime fechaSalida,
                                  Int32 idTipoPago,
                                  Decimal monto,
-                                 Int32 idAmbiente,
-                                 List<HuespedBE> lstHuespedBE);
+                                 List<Int32> lstIdsAmbiente,
+                                 List<Int32> lstIdsHuesped);
     }
 }
 
@@ -44,11 +47,15 @@ public class ReservaBE
     [DataMember]
     public String Huesped { get; set; }
     [DataMember]
+    public String Distrito { get; set; }
+    [DataMember]
     public String Direccion { get; set; }
     [DataMember]
     public Int32 Piso { get; set; }
     [DataMember]
     public String Identificador { get; set; }
+    [DataMember]
+    public String TipoPago { get; set; }
 }
 
 [DataContract]
