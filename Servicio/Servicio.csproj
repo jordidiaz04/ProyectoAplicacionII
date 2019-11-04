@@ -64,6 +64,7 @@
     <Compile Include="IServiceAmbiente.cs" />
     <Compile Include="IServiceHuesped.cs" />
     <Compile Include="IServiceReserva.cs" />
+    <Compile Include="IServiceUbigeo.cs" />
     <Compile Include="Model1.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -98,6 +99,7 @@
     <Compile Include="ServiceAmbiente.cs" />
     <Compile Include="ServiceHuesped.cs" />
     <Compile Include="ServiceReserva.cs" />
+    <Compile Include="ServiceUbigeo.cs" />
     <Compile Include="TipoDocumento.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

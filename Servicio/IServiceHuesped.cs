@@ -12,6 +12,9 @@ namespace Servicio
     {
         [OperationContract]
         List<HuespedBE> contarHuespedesPorPais();
+
+        [OperationContract]
+        Boolean registrarHuesped(HuespedBE huespedBE);
     }
 }
 

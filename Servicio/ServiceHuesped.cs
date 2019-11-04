@@ -7,7 +7,6 @@ using System.Text;
 
 namespace Servicio
 {
-    // NOTA: puede usar el comando "Rename" del menú "Refactorizar" para cambiar el nombre de clase "ServiceHuesped" en el código y en el archivo de configuración a la vez.
     public class ServiceHuesped : IServiceHuesped
     {
         public List<HuespedBE> contarHuespedesPorPais()
