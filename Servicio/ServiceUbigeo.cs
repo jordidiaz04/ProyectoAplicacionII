@@ -98,7 +98,8 @@ namespace Servicio
             }
         }
 
-        public List<DistritoBE> obtenerDistritos(String idDepartamento, String idProvincia)
+        public List<DistritoBE> obtenerDistritos(String idDepartamento,
+                                                 String idProvincia)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {

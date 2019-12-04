@@ -20,7 +20,8 @@ namespace Servicio
         List<ProvinciaBE> obtenerProvincias(String idDepartamento);
 
         [OperationContract]
-        List<DistritoBE> obtenerDistritos(String idDepartamento, String idProvincia);
+        List<DistritoBE> obtenerDistritos(String idDepartamento,
+                                          String idProvincia);
     }
 }
 

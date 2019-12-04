@@ -9,8 +9,8 @@ namespace Servicio
 {
     public class ServiceAmbiente : IServiceAmbiente
     {
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio, 
-                                                                  DateTime fechaFinal, 
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorAforo(DateTime fechaInicio,
+                                                                  DateTime fechaFinal,
                                                                   Int32 aforoMenor,
                                                                   Int32 aforoMayor,
                                                                   String idUbigeo)
@@ -42,11 +42,11 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
+                            Aforo = item.aforo,
                             Distrito = item.Hotel.Ubigeo.ubicacion,
                             Direccion = item.Hotel.direccion,
                             Piso = item.piso,
                             Identificador = item.identificador,
-                            Aforo = item.aforo,
                             Precio = item.precio
                         };
                         lstAmbienteBE.Add(objAmbienteBE);
@@ -61,7 +61,7 @@ namespace Servicio
             }
         }
 
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio, 
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorFecha(DateTime fechaInicio,
                                                                   DateTime fechaFinal,
                                                                   String idUbigeo)
         {
@@ -76,8 +76,8 @@ namespace Servicio
                                           select item).ToList();
 
                     var listaReservas = (from item in entity.ReservaDetalle
-                                         where item.Reserva.fechaIngreso >= fechaInicio && 
-                                               item.Reserva.fechaSalida <= fechaFinal && 
+                                         where item.Reserva.fechaIngreso >= fechaInicio &&
+                                               item.Reserva.fechaSalida <= fechaFinal &&
                                                item.Reserva.estado == true
                                          select item).ToList();
 
@@ -90,11 +90,15 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
+                            IdAmbiente = item.id,
+                            Aforo = item.aforo,
                             Distrito = item.Hotel.Ubigeo.ubicacion,
                             Direccion = item.Hotel.direccion,
                             Piso = item.piso,
                             Identificador = item.identificador,
-                            Precio = item.precio
+                            Precio = item.precio,
+                            Descripcion = item.identificador.Contains("PISCINA") || item.identificador.Contains("SALA") ? item.identificador :
+                                          "Habitacion " + item.identificador
                         };
                         lstAmbienteBE.Add(objAmbienteBE);
                     }
@@ -108,9 +112,9 @@ namespace Servicio
             }
         }
 
-        public List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio, 
-                                                                           DateTime fechaFinal, 
-                                                                           Decimal precioMenor, 
+        public List<AmbienteBE> obtenerAmbienteDisponiblePorRangoDePrecios(DateTime fechaInicio,
+                                                                           DateTime fechaFinal,
+                                                                           Decimal precioMenor,
                                                                            Decimal precioMayor,
                                                                            String idUbigeo)
         {
@@ -141,6 +145,7 @@ namespace Servicio
                     {
                         AmbienteBE objAmbienteBE = new AmbienteBE()
                         {
+                            Aforo = item.aforo,
                             Distrito = item.Hotel.Ubigeo.ubicacion,
                             Direccion = item.Hotel.direccion,
                             Piso = item.piso,

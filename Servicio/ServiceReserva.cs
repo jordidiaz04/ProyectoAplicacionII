@@ -9,7 +9,7 @@ namespace Servicio
 {
     public class ServiceReserva : IServiceReserva
     {
-        public List<ReservaBE> listarReservasPorHuesped(String idTipoDoc, 
+        public List<ReservaBE> listarReservasPorHuesped(String idTipoDoc,
                                                         String numDoc,
                                                         DateTime fechaInicio,
                                                         DateTime fechaFinal)
@@ -28,7 +28,7 @@ namespace Servicio
                                  select new
                                  {
                                      Dni = huesped.Huesped.numDoc,
-                                     Huesped = huesped.Huesped.nombre,
+                                     huesped.Huesped,
                                      FechaInicio = huesped.Reserva.fechaIngreso,
                                      FechaSalida = huesped.Reserva.fechaSalida,
                                      Distrito = ambiente.Ambiente.Hotel.Ubigeo.ubicacion,
@@ -44,7 +44,12 @@ namespace Servicio
                         ReservaBE objReservaBE = new ReservaBE()
                         {
                             Dni = item.Dni,
-                            Huesped = item.Huesped,
+                            Huesped = new HuespedBE()
+                            {
+                                Nombre = item.Huesped.nombre,
+                                Email = item.Huesped.email,
+                                Pais = item.Huesped.Pais.ubicacion
+                            },
                             FechaInicio = item.FechaInicio,
                             FechaSalida = item.FechaSalida,
                             Distrito = item.Distrito,
@@ -67,45 +72,124 @@ namespace Servicio
             }
         }
 
-        public bool registrarReserva(DateTime fechaIngreso,
-                                     DateTime fechaSalida,
-                                     Int32 idTipoPago,
-                                     Decimal monto,
-                                     List<Int32> lstIdsAmbiente,
-                                     List<Int32> lstIdsHuesped)
+        public List<ReservaBE> listarReservasPorFecha(DateTime fechaInicio,
+                                                      DateTime fechaFinal,
+                                                      String idUbigeo)
         {
             using (HospedajeEntities entity = new HospedajeEntities())
             {
                 try
                 {
-                    Reserva reserva = new Reserva()
-                    {
-                        fechaIngreso = fechaIngreso,
-                        fechaSalida = fechaSalida,
-                        idTipoPago = idTipoPago,
-                        monto = monto,
-                        estado = true
-                    };
-                    entity.Reserva.Add(reserva);
-                    entity.SaveChanges();
+                    List<ReservaBE> lstReservaBE = new List<ReservaBE>();
+                    var lista = (from huesped in entity.ReservaHuesped
+                                 join ambiente in entity.ReservaDetalle on huesped.idReserva equals ambiente.idReserva
+                                 where huesped.Reserva.fechaIngreso >= fechaInicio &&
+                                       huesped.Reserva.fechaSalida <= fechaFinal &&
+                                       ambiente.Ambiente.Hotel.Ubigeo.id == idUbigeo
+                                 select new
+                                 {
+                                     Dni = huesped.Huesped.numDoc,
+                                     huesped.Huesped,
+                                     FechaInicio = huesped.Reserva.fechaIngreso,
+                                     FechaSalida = huesped.Reserva.fechaSalida,
+                                     Distrito = ambiente.Ambiente.Hotel.Ubigeo.ubicacion,
+                                     Direccion = ambiente.Ambiente.Hotel.direccion,
+                                     Piso = ambiente.Ambiente.piso,
+                                     Identificador = ambiente.Ambiente.identificador,
+                                     TipoPago = ambiente.Reserva.TipoPago.descripcion,
+                                     Monto = huesped.Reserva.monto
+                                 }).ToList();
 
-                    for (int i = 0; i < lstIdsAmbiente.Count; i++)
+                    foreach (var item in lista)
                     {
-                        ReservaDetalle reservaDetalle = new ReservaDetalle()
+                        ReservaBE objReservaBE = new ReservaBE()
                         {
-                            idReserva = reserva.id,
-                            idAmbiente = lstIdsAmbiente[i],
-                            estado = true
+                            Dni = item.Dni,
+                            Huesped = new HuespedBE()
+                            {
+                                Nombre = item.Huesped.nombre,
+                                Email = item.Huesped.email,
+                                Pais = item.Huesped.Pais.ubicacion
+                            },
+                            FechaInicio = item.FechaInicio,
+                            FechaSalida = item.FechaSalida,
+                            Distrito = item.Distrito,
+                            Direccion = item.Direccion,
+                            Piso = item.Piso,
+                            Identificador = item.Identificador,
+                            TipoPago = item.TipoPago,
+                            Monto = item.Monto
                         };
-                        entity.ReservaDetalle.Add(reservaDetalle);
-                        entity.SaveChanges();
+                        lstReservaBE.Add(objReservaBE);
                     }
 
-                    return true;
+                    return lstReservaBE;
                 }
                 catch (Exception ex)
                 {
+                    return null;
                     throw ex;
+                }
+            }
+        }
+
+        public Boolean registrarReserva(List<HuespedBE> lstHuespedBE,
+                                        List<AmbienteBE> lstAmbienteBE,
+                                        DateTime fechaInicio,
+                                        DateTime fechaSalida,
+                                        Int32 idTipoPago,
+                                        Decimal monto)
+        {
+            using (HospedajeEntities entity = new HospedajeEntities())
+            {
+                using (var dbTransaction = entity.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        Reserva reserva = new Reserva()
+                        {
+                            fechaIngreso = fechaInicio,
+                            fechaSalida = fechaSalida,
+                            idTipoPago = idTipoPago,
+                            monto = monto,
+                            estado = true
+                        };
+                        entity.Reserva.Add(reserva);
+                        entity.SaveChanges();
+
+                        for (int i = 0; i < lstAmbienteBE.Count; i++)
+                        {
+                            ReservaDetalle reservaDetalle = new ReservaDetalle()
+                            {
+                                idReserva = reserva.id,
+                                idAmbiente = lstAmbienteBE[i].IdAmbiente,
+                                estado = true
+                            };
+                            entity.ReservaDetalle.Add(reservaDetalle);
+                            entity.SaveChanges();
+                        }
+
+                        for (int i = 0; i < lstHuespedBE.Count; i++)
+                        {
+                            ReservaHuesped reservaHuesped = new ReservaHuesped()
+                            {
+                                idReserva = reserva.id,
+                                idHuesped = lstHuespedBE[i].Id,
+                                estado = true
+                            };
+                            entity.ReservaHuesped.Add(reservaHuesped);
+                            entity.SaveChanges();
+                        }
+
+                        dbTransaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbTransaction.Rollback();
+                        return false;
+                        throw ex;
+                    }
                 }
             }
         }

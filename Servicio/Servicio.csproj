@@ -64,6 +64,8 @@
     <Compile Include="IServiceAmbiente.cs" />
     <Compile Include="IServiceHuesped.cs" />
     <Compile Include="IServiceReserva.cs" />
+    <Compile Include="IServiceTipoDocumento.cs" />
+    <Compile Include="IServiceTipoPago.cs" />
     <Compile Include="IServiceUbigeo.cs" />
     <Compile Include="Model1.Context.cs">
       <AutoGen>True</AutoGen>
@@ -99,6 +101,8 @@
     <Compile Include="ServiceAmbiente.cs" />
     <Compile Include="ServiceHuesped.cs" />
     <Compile Include="ServiceReserva.cs" />
+    <Compile Include="ServiceTipoDocumento.cs" />
+    <Compile Include="ServiceTipoPago.cs" />
     <Compile Include="ServiceUbigeo.cs" />
     <Compile Include="TipoDocumento.cs">
       <DependentUpon>Model1.tt</DependentUpon>
